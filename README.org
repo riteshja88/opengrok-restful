@@ -1,6 +1,6 @@
 ** opengrok-restful
 
-*** Setup opengrok
+*** Setup opengrok (v1.3)
 
     - Start opengrok server and limit the cpu usage of opengrok indexer.
     - Period of automatic mirroring/reindexing (10min).
@@ -26,6 +26,17 @@
 
     #+begin_src shell
     $ sudo docker exec -it opengrok /scripts/index.sh
+    #+end_src
+
+*** Setup opengrok (v1.13)
+
+    #+begin_src shell
+    $ docker run -d --name opengrok -p 8080:8080/tcp -e NOMIRROR=1 -e SYNC_PERIOD_MINUTES=0 -v /Users/bytedance/opengrok:/opengrok/src/ opengrok/docker:1.13 tail -f /dev/null
+    $ docker exec -it opengrok bash
+    > apt update && apt install -y vim
+    > vim /scripts/start.py # Comment out the -H parameter (appears twice) and the --noIndex parameter in the code
+    > source /venv/bin/activate
+    > nohup env INDEXER_OPT="-I *.cpp -I *.hpp -I *.h -I *.c" python /scripts/start.py &
     #+end_src
 
 *** Setup opengrok-restful
